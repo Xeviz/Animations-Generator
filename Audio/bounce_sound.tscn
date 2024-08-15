@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://bpjk4mmfhvmk2"]
+
+[ext_resource type="AudioStream" uid="uid://dmbqgxnn3u1f1" path="res://Audio/bounce_1.wav" id="1_ljoyh"]
+[ext_resource type="Script" path="res://Audio/bounce_sound.gd" id="2_qqaln"]
+
+[node name="Node2D" type="AudioStreamPlayer2D"]
+stream = ExtResource("1_ljoyh")
+autoplay = true
+script = ExtResource("2_qqaln")

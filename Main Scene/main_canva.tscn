@@ -1,0 +1,121 @@
+[gd_scene load_steps=10 format=3 uid="uid://byhmosidpq36b"]
+
+[ext_resource type="Script" path="res://Main Scene/main_canva.gd" id="1_f4gpg"]
+[ext_resource type="Script" path="res://Circles/big_circle.gd" id="2_r5wk1"]
+[ext_resource type="PackedScene" uid="uid://bpjk4mmfhvmk2" path="res://Audio/bounce_sound.tscn" id="3_oruui"]
+[ext_resource type="Script" path="res://Circles/small_circle.gd" id="3_q8rcg"]
+[ext_resource type="Script" path="res://States/finite_state_machine.gd" id="4_umw5p"]
+[ext_resource type="PackedScene" uid="uid://d4m3d1tcg8a5o" path="res://UI/Adjusters/value_adjustment.tscn" id="4_v3vev"]
+[ext_resource type="Script" path="res://States/Circle/animate.gd" id="5_h7oaa"]
+[ext_resource type="Script" path="res://States/Circle/restart.gd" id="6_6uq7x"]
+[ext_resource type="Script" path="res://States/Circle/freeze.gd" id="7_lg5ah"]
+
+[node name="Node2D" type="Node2D" node_paths=PackedStringArray("big_circle", "small_circle")]
+script = ExtResource("1_f4gpg")
+big_circle = NodePath("BigCircle")
+small_circle = NodePath("SmallCircle")
+
+[node name="SmallCircle" type="CharacterBody2D" parent="." node_paths=PackedStringArray("big_circle", "parent_canva", "radius_adjuster", "red_adjuster", "green_adjuster", "blue_adjuster", "gravity_gain_adjuster", "size_gain_adjuster", "bounce_gain_adjuster", "gravity_adjuster", "bounce_adjuster")]
+position = Vector2(800, 450)
+script = ExtResource("3_q8rcg")
+bounce_sound = ExtResource("3_oruui")
+big_circle = NodePath("../BigCircle")
+parent_canva = NodePath("..")
+radius_adjuster = NodePath("../Adjusters/SmallCircleSize")
+red_adjuster = NodePath("../Adjusters/SmallCircleRed")
+green_adjuster = NodePath("../Adjusters/SmallCircleGreen")
+blue_adjuster = NodePath("../Adjusters/SmallCircleBlue")
+gravity_gain_adjuster = NodePath("../Adjusters/GravityChange")
+size_gain_adjuster = NodePath("../Adjusters/SizeChange")
+bounce_gain_adjuster = NodePath("../Adjusters/BounceChange")
+gravity_adjuster = NodePath("../Adjusters/Gravity")
+bounce_adjuster = NodePath("../Adjusters/Bounce")
+
+[node name="FiniteStateMachine" type="Node" parent="SmallCircle" node_paths=PackedStringArray("initial_state")]
+script = ExtResource("4_umw5p")
+initial_state = NodePath("Freeze")
+
+[node name="Animate" type="Node" parent="SmallCircle/FiniteStateMachine" node_paths=PackedStringArray("circle", "main_canva")]
+script = ExtResource("5_h7oaa")
+circle = NodePath("../..")
+main_canva = NodePath("../../..")
+
+[node name="Restart" type="Node" parent="SmallCircle/FiniteStateMachine" node_paths=PackedStringArray("circle", "main_canva")]
+script = ExtResource("6_6uq7x")
+circle = NodePath("../..")
+main_canva = NodePath("../../..")
+
+[node name="Freeze" type="Node" parent="SmallCircle/FiniteStateMachine" node_paths=PackedStringArray("main_canva", "circle")]
+script = ExtResource("7_lg5ah")
+main_canva = NodePath("../../..")
+circle = NodePath("../..")
+
+[node name="BigCircle" type="Node2D" parent="." node_paths=PackedStringArray("parent_canva", "radius_adjuster")]
+position = Vector2(800, 450)
+script = ExtResource("2_r5wk1")
+parent_canva = NodePath("..")
+radius_adjuster = NodePath("../Adjusters/BigCircleSize")
+
+[node name="StartButton" type="Button" parent="."]
+offset_left = 62.0
+offset_top = 829.0
+offset_right = 118.0
+offset_bottom = 860.0
+text = "START"
+metadata/_edit_use_anchors_ = true
+
+[node name="StopButton" type="Button" parent="."]
+offset_left = 142.0
+offset_top = 829.0
+offset_right = 191.0
+offset_bottom = 860.0
+text = "STOP"
+metadata/_edit_use_anchors_ = true
+
+[node name="RestartButton" type="Button" parent="."]
+offset_left = 212.0
+offset_top = 829.0
+offset_right = 287.0
+offset_bottom = 860.0
+text = "RESTART"
+metadata/_edit_use_anchors_ = true
+
+[node name="Adjusters" type="Node2D" parent="."]
+
+[node name="SmallCircleSize" parent="Adjusters" instance=ExtResource("4_v3vev")]
+position = Vector2(63, 136)
+
+[node name="SmallCircleRed" parent="Adjusters" instance=ExtResource("4_v3vev")]
+position = Vector2(63, 236)
+
+[node name="SmallCircleGreen" parent="Adjusters" instance=ExtResource("4_v3vev")]
+position = Vector2(63, 336)
+
+[node name="SmallCircleBlue" parent="Adjusters" instance=ExtResource("4_v3vev")]
+position = Vector2(63, 436)
+
+[node name="SizeChange" parent="Adjusters" instance=ExtResource("4_v3vev")]
+position = Vector2(63, 536)
+
+[node name="BounceChange" parent="Adjusters" instance=ExtResource("4_v3vev")]
+position = Vector2(63, 636)
+
+[node name="GravityChange" parent="Adjusters" instance=ExtResource("4_v3vev")]
+position = Vector2(63, 736)
+
+[node name="BigCircleSize" parent="Adjusters" instance=ExtResource("4_v3vev")]
+position = Vector2(63, 36)
+
+[node name="Gravity" parent="Adjusters" instance=ExtResource("4_v3vev")]
+position = Vector2(1261, 56)
+
+[node name="Bounce" parent="Adjusters" instance=ExtResource("4_v3vev")]
+position = Vector2(1261, 156)
+
+[connection signal="button_down" from="StartButton" to="." method="_on_start_button_button_down"]
+[connection signal="button_down" from="StartButton" to="SmallCircle/FiniteStateMachine/Freeze" method="_on_start_button_button_down"]
+[connection signal="button_down" from="StopButton" to="." method="_on_stop_button_button_down"]
+[connection signal="button_down" from="StopButton" to="SmallCircle/FiniteStateMachine/Animate" method="_on_stop_button_button_down"]
+[connection signal="button_down" from="RestartButton" to="." method="_on_restart_button_button_down"]
+[connection signal="button_down" from="RestartButton" to="SmallCircle/FiniteStateMachine/Animate" method="_on_restart_button_button_down"]
+[connection signal="button_down" from="RestartButton" to="SmallCircle/FiniteStateMachine/Freeze" method="_on_restart_button_button_down"]
