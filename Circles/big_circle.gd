@@ -16,6 +16,7 @@ func _ready():
 	
 	radius_adjuster.name = "Outer Circle Size"
 	radius_adjuster.slider.value = 1.0
+	radius_adjuster.slider.step = 0.01
 	radius_adjuster.slider.min_value = 0.5
 	radius_adjuster.slider.max_value = 1.0
 	parent_canva.queue_redraw()

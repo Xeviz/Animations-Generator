@@ -8,7 +8,7 @@ func enter():
 	main_canva.start_animation = true
 
 func update(delta):
-	if circle.radius < 0.99 * circle.big_circle.radius:
+	if circle.radius < 0.99 * circle.big_circle.radius and circle.radius >1:
 		circle.velocity.y += circle.gravity_strength
 		circle.move_circle(delta)
 		circle.parent_canva.queue_redraw()
